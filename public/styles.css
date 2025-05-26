@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+header {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+#logo {
+  cursor: pointer;
+}
+
+.reservation-link {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+}
+
+.search-section {
+  padding: 20px;
+  text-align: center;
+}
+
+#search, select {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+}
+
+#suggestions {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 200px;
+}
+
+#suggestions div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#suggestions div:hover {
+  background-color: #f0f0f0;
+}
+
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.car {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: center;
+}
+
+.car img {
+  max-width: 100%;
+  height: auto;
+}
+
+.car button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.car button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#car-details, #reservation-form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ddd;
+}
+
+#reservation-form input, #reservation-form button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+#submit-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+#submit-btn:disabled {
+  background-color: #ccc;
+}
+
+#cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+#form-feedback {
+  color: #dc3545;
+}

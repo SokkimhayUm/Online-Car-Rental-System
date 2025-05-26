@@ -1,0 +1,43 @@
+{
+  "cars": [
+    {
+      "carType": "Sedan",
+      "brand": "Toyota",
+      "carModel": "Corolla",
+      "image": "https://thenounproject.com/icon/ford-mustang-gt-4369703/",
+      "yearOfManufacture": 2014,
+      "mileage": "30,000 km",
+      "fuelType": "Gasoline",
+      "available": true,
+      "pricePerDay": 50,
+      "description": "A reliable and fuel-efficient sedan perfect for daily commuting.",
+      "vin": "1HGBH41JXMN109186"
+    },
+    {
+      "carType": "SUV",
+      "brand": "Honda",
+      "carModel": "CR-V",
+      "image": "https://thenounproject.com/icon/car-2087570/",
+      "yearOfManufacture": 2001,
+      "mileage": "45,000 km",
+      "fuelType": "Gasoline",
+      "available": false,
+      "pricePerDay": 70,
+      "description": "Spacious and versatile, great for family trips and outdoor adventures.",
+      "vin": "2HGFC2F60KH123456"
+    },
+    {
+      "carType": "Coupe",
+      "brand": "Ford",
+      "carModel": "Mustang",
+      "image": "https://thenounproject.com/icon/ford-mustang-gt500-1965-1763854/",
+      "yearOfManufacture": 2010,
+      "mileage": "15,000 km",
+      "fuelType": "Gasoline",
+      "available": true,
+      "pricePerDay": 120,
+      "description": "A powerful and stylish coupe offering an exhilarating driving experience.",
+      "vin": "1FA6P8TH6J5134567"
+    }
+  ]
+}
