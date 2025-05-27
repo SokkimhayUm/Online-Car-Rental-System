@@ -20,10 +20,13 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false } // Required for Railway
 });
 
-// Test database connection
+// Test database connection with detailed error logging
 pool.connect()
   .then(() => console.log('Connected to PostgreSQL database'))
-  .catch(err => console.error('Database connection error:', err.message));
+  .catch(err => {
+    console.error('Database connection error:', err.message);
+    console.error('Error stack:', err.stack);
+  });
 
 // GET /cars - Retrieve car data
 app.get('/cars', async (req, res) => {
@@ -31,7 +34,7 @@ app.get('/cars', async (req, res) => {
     const result = await pool.query('SELECT * FROM cars');
     res.json({ cars: result.rows }); // Match cars.json structure
   } catch (err) {
-    console.error('Error fetching cars:', err.message);
+    console.error('Error fetching cars:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to fetch cars data' });
   }
 });
@@ -80,7 +83,7 @@ app.post('/orders', async (req, res) => {
     console.log(`Order created: ID ${orderId}`);
     res.json({ success: true, orderId });
   } catch (err) {
-    console.error('Error processing order:', err.message);
+    console.error('Error processing order:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to process order' });
   }
 });
@@ -112,7 +115,7 @@ app.post('/confirm-order', async (req, res) => {
     console.log(`Order confirmed: ID ${orderId}`);
     res.json({ success: true });
   } catch (err) {
-    console.error('Error confirming order:', err.message);
+    console.error('Error confirming order:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to confirm order' });
   }
 });
