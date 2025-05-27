@@ -1,74 +1,63 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Car Rental</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-  <header>
-    <img src="https://via.placeholder.com/150x50?text=Logo" alt="Logo" id="logo" onclick="window.location.href='index.html'">
-    <a href="reservation.html" class="reservation-link">Reservation</a>
-  </header>
-  <main>
-    <section class="search-section">
-      <input type="text" id="search" placeholder="Search cars...">
-      <div id="suggestions"></div>
-      <select id="type-filter">
-        <option value="">All Types</option>
-        <option value="Sedan">Sedan</option>
-        <option value="SUV">SUV</option>
-        <option value="Coupe">Coupe</option>
-      </select>
-      <select id="brand-filter">
-        <option value="">All Brands</option>
-        <option value="Toyota">Toyota</option>
-        <option value="Honda">Honda</option>
-        <option value="Ford">Ford</option>
-      </select>
-    </section>
-    <section id="car-grid" class="car-grid"></section>
-  </main>
-  <script src="scripts.js"></script>
+    <header>
+        <img src="images/logo.png" alt="Car Rental Logo" id="logo" onclick="window.location.href='index.html'">
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="reservation.html">Reservation</a>
+        </nav>
+    </header>
+    <main>
+        <section id="search-section">
+            <div class="search-container">
+                <div class="dropdown" id="type-dropdown">
+                    <button class="dropbtn">Car Types</button>
+                    <div class="dropdown-content">
+                        <div data-value="">All Types</div>
+                        <div data-value="Sedan"><img src="icons/sedan.png" alt="Sedan"> Sedan</div>
+                        <div data-value="Hatchback"><img src="icons/hatchback.png" alt="Hatchback"> Hatchback</div>
+                        <div data-value="SUV"><img src="icons/suv.png" alt="SUV"> SUV</div>
+                        <div data-value="Pickup"><img src="icons/pickup.png" alt="Pickup"> Pickup</div>
+                        <div data-value="Minivan"><img src="icons/minivan.png" alt="Minivan"> Minivan</div>
+                        <div data-value="Coupe"><img src="icons/coupe.png" alt="Coupe"> Coupe</div>
+                        <div data-value="Compact"><img src="icons/compact.png" alt="Compact"> Compact</div>
+                        <div data-value="Convertible"><img src="icons/convertible.png" alt="Convertible"> Convertible</div>
+                        <div data-value="Truck"><img src="icons/truck.png" alt="Truck"> Truck</div>
+                    </div>
+                </div>
+                <div class="dropdown" id="brand-dropdown">
+                    <button class="dropbtn">Car Brands</button>
+                    <div class="dropdown-content">
+                        <div data-value="">All Brands</div>
+                        <div data-value="Toyota"><img src="icons/toyota.png" alt="Toyota"> Toyota</div>
+                        <div data-value="Honda"><img src="icons/honda.png" alt="Honda"> Honda</div>
+                        <div data-value="Ford"><img src="icons/ford.png" alt="Ford"> Ford</div>
+                        <div data-value="Hyundai"><img src="icons/hyundai.png" alt="Hyundai"> Hyundai</div>
+                        <div data-value="BMW"><img src="icons/bmw.png" alt="BMW"> BMW</div>
+                        <div data-value="Chevrolet"><img src="icons/chevrolet.png" alt="Chevrolet"> Chevrolet</div>
+                    </div>
+                </div>
+                <div class="search-input-container">
+                    <input type="text" id="search-box" placeholder="Enter your car type, brand, model or description">
+                    <button id="search-button">Search</button>
+                    <div id="suggestions"></div>
+                </div>
+            </div>
+        </section>
+        <section id="car-grid"></section>
+    </main>
+    <footer>
+        <p>Assignment Project - Online Car Rental System using AJAX and JSON | Sokkimhay Um - 13712702</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
