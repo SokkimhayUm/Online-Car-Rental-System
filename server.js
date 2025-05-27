@@ -63,7 +63,7 @@ app.post('/orders', async (req, res) => {
         car_vin, start_date, rental_period, total_price, order_date, status
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING order_id
+      RETURNING id
     `;
     const values = [
       order.customer.customer_name,
@@ -78,7 +78,7 @@ app.post('/orders', async (req, res) => {
       'pending'
     ];
     const orderResult = await pool.query(query, values);
-    const id = orderResult.rows[0].order_id;
+    const id = orderResult.rows[0].id;
 
     console.log(`Order created: ID ${id}`);
     res.json({ success: true, id });
@@ -99,7 +99,7 @@ app.post('/confirm-order', async (req, res) => {
 
     // Check order status
     const orderResult = await pool.query(
-      'SELECT status, car_vin FROM orders WHERE order_id = $1',
+      'SELECT status, car_vin FROM orders WHERE id = $1',
       [id]
     );
     const order = orderResult.rows[0];
@@ -109,7 +109,7 @@ app.post('/confirm-order', async (req, res) => {
     }
 
     // Update order status and car availability
-    await pool.query('UPDATE orders SET status = $1 WHERE order_id = $2', ['confirmed', id]);
+    await pool.query('UPDATE orders SET status = $1 WHERE id = $2', ['confirmed', id]);
     await pool.query('UPDATE cars SET available = $1 WHERE vin = $2', [false, order.car_vin]);
 
     console.log(`Order confirmed: ID ${id}`);
