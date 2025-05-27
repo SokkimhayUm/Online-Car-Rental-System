@@ -66,22 +66,22 @@ app.post('/orders', async (req, res) => {
       RETURNING order_id
     `;
     const values = [
-      order.customer.name,
-      order.customer.phoneNumber,
-      order.customer.email,
-      order.customer.driversLicense,
+      order.customer.customer_name,
+      order.customer.customer_phone,
+      order.customer.customer_email,
+      order.customer.customer_license,
       order.car.vin,
-      order.rental.startDate,
-      order.rental.rentalPeriod,
-      order.rental.totalPrice,
-      order.rental.orderDate,
+      order.rental.start_date,
+      order.rental.rental_period,
+      order.rental.total_price,
+      order.rental.order_date,
       'pending'
     ];
     const orderResult = await pool.query(query, values);
-    const orderId = orderResult.rows[0].order_id;
+    const id = orderResult.rows[0].order_id;
 
-    console.log(`Order created: ID ${orderId}`);
-    res.json({ success: true, orderId });
+    console.log(`Order created: ID ${id}`);
+    res.json({ success: true, id });
   } catch (err) {
     console.error('Error processing order:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to process order' });
@@ -92,27 +92,27 @@ app.post('/orders', async (req, res) => {
 app.post('/confirm-order', async (req, res) => {
   try {
     // Validate request body
-    const { orderId } = req.body;
-    if (!orderId) {
+    const { id } = req.body;
+    if (!id) {
       return res.status(400).json({ success: false, error: 'Order ID is required' });
     }
 
     // Check order status
     const orderResult = await pool.query(
       'SELECT status, car_vin FROM orders WHERE order_id = $1',
-      [orderId]
+      [id]
     );
     const order = orderResult.rows[0];
     if (!order || order.status !== 'pending') {
-      console.log(`Invalid or non-pending order: ID ${orderId}`);
+      console.log(`Invalid or non-pending order: ID ${id}`);
       return res.status(400).json({ success: false, error: 'Order not found or already processed' });
     }
 
     // Update order status and car availability
-    await pool.query('UPDATE orders SET status = $1 WHERE order_id = $2', ['confirmed', orderId]);
+    await pool.query('UPDATE orders SET status = $1 WHERE order_id = $2', ['confirmed', id]);
     await pool.query('UPDATE cars SET available = $1 WHERE vin = $2', [false, order.car_vin]);
 
-    console.log(`Order confirmed: ID ${orderId}`);
+    console.log(`Order confirmed: ID ${id}`);
     res.json({ success: true });
   } catch (err) {
     console.error('Error confirming order:', err.message, err.stack);

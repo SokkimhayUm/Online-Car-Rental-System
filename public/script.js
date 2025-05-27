@@ -55,9 +55,9 @@ function initializeSearchAndFilters() {
         $.get('/cars', function(data) {
             console.log('Cars data received:', data);
             let suggestions = data.cars.filter(car => {
-                let searchText = `${car.car_type} ${car.brand} ${car.car_model} ${car.description}`.toLowerCase();
+                let searchText = `${car.carType} ${car.brand} ${car.carModel} ${car.description}`.toLowerCase();
                 return query.split(' ').every(term => searchText.includes(term));
-            }).map(car => `${car.brand} ${car.car_model}`);
+            }).map(car => `${car.brand} ${car.carModel}`);
             displaySuggestions(suggestions);
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.error('Error fetching cars for suggestions:', textStatus, errorThrown);
@@ -124,9 +124,9 @@ function searchCars() {
     $.get('/cars', function(data) {
         console.log('Cars data for search:', data);
         let filteredCars = data.cars.filter(car => {
-            let searchText = `${car.car_type} ${car.brand} ${car.car_model} ${car.description}`.toLowerCase();
+            let searchText = `${car.carType} ${car.brand} ${car.carModel} ${car.description}`.toLowerCase();
             let queryMatch = !query || query.split(' ').every(term => searchText.includes(term));
-            let typeMatch = !typeFilter || car.car_type === typeFilter;
+            let typeMatch = !typeFilter || car.carType === typeFilter;
             let brandMatch = !brandFilter || car.brand === brandFilter;
             return queryMatch && typeMatch && brandMatch;
         });
@@ -159,15 +159,15 @@ function displayCars(cars, query) {
         <div class="search-category type-model">
             ${cars.map(car => `
                 <div class="car-card">
-                    <img src="${car.image}" alt="${car.brand} ${car.car_model}" class="car-img">
+                    <img src="${car.image}" alt="${car.brand} ${car.carModel}" class="car-img">
                     <div class="car-details">
-                        <h3>${car.brand} ${car.car_model}</h3>
+                        <h3>${car.brand} ${car.carModel}</h3>
                         <div class="car-info-grid">
-                            <p><strong>Type:</strong> ${car.car_type}</p>
-                            <p><strong>Year:</strong> ${car.year_of_manufacture}</p>
-                            <p><strong>Price:</strong> $${car.price_per_day}/day</p>
+                            <p><strong>Type:</strong> ${car.carType}</p>
+                            <p><strong>Year:</strong> ${car.yearOfManufacture}</p>
+                            <p><strong>Price:</strong> $${car.pricePerDay}/day</p>
                             <p><strong>Mileage:</strong> ${car.mileage}</p>
-                            <p><strong>Fuel:</strong> ${car.fuel_type}</p>
+                            <p><strong>Fuel:</strong> ${car.fuelType}</p>
                             <p><strong>Available:</strong> ${car.available ? 'Yes' : 'No'}</p>
                         </div>
                         <p class="description">${car.description}</p>
@@ -184,7 +184,7 @@ function displayCars(cars, query) {
     if (query) {
         let matchingDescriptions = cars.filter(car => 
             car.description.toLowerCase().includes(query)
-        ).map(car => `<p>${car.brand} ${car.car_model}: ${car.description}</p>`);   
+        ).map(car => `<p>${car.brand} ${car.carModel}: ${car.description}</p>`);   
     }
 
     let carGridHtml = typeModelHtml || descriptionHtml ? `
@@ -227,15 +227,15 @@ function loadCarDetails() {
 
         // Render car details
         const carHtml = `
-            <img src="${car.image}" alt="${car.brand} ${car.car_model}" class="car-img">
+            <img src="${car.image}" alt="${car.brand} ${car.carModel}" class="car-img">
             <div class="car-details">
-                <h3>${car.brand} ${car.car_model}</h3>
+                <h3>${car.brand} ${car.carModel}</h3>
                 <div class="car-info-grid">
-                    <p><strong>Type:</strong> ${car.car_type}</p>
-                    <p><strong>Year:</strong> ${car.year_of_manufacture}</p>
-                    <p><strong>Price:</strong> $${car.price_per_day}/day</p>
+                    <p><strong>Type:</strong> ${car.carType}</p>
+                    <p><strong>Year:</strong> ${car.yearOfManufacture}</p>
+                    <p><strong>Price:</strong> $${car.pricePerDay}/day</p>
                     <p><strong>Mileage:</strong> ${car.mileage}</p>
-                    <p><strong>Fuel:</strong> ${car.fuel_type}</p>
+                    <p><strong>Fuel:</strong> ${car.fuelType}</p>
                 </div>
             </div>
         `;
@@ -317,7 +317,7 @@ function validateForm() {
         $.get('/cars', function(data) {
             let car = data.cars.find(c => c.vin === vin);
             if (car) {
-                let totalPrice = car.price_per_day * rentalPeriod;
+                let totalPrice = car.pricePerDay * rentalPeriod;
                 console.log('Calculated total price:', totalPrice);
                 $('#total-price').text(totalPrice);
             }
@@ -337,15 +337,19 @@ function submitOrder() {
     $('#submit-button').prop('disabled', true).text('Submitting...');
     let vin = localStorage.getItem('selectedCarVin');
     let order = {
-        customer_name: $('#name').val().trim(),
-        customer_phone: $('#phone').val().trim(),
-        customer_email: $('#email').val().trim(),
-        customer_license: $('#license').val().trim(),
-        car_vin: vin,
-        start_date: $('#start-date').val(),
-        rental_period: parseInt($('#rental-period').val()),
-        total_price: parseFloat($('#total-price').text()),
-        order_date: new Date().toISOString().split('T')[0]
+        customer: {
+            name: $('#name').val().trim(),
+            phoneNumber: $('#phone').val().trim(),
+            email: $('#email').val().trim(),
+            driversLicense: $('#license').val().trim()
+        },
+        car: { vin },
+        rental: {
+            startDate: $('#start-date').val(),
+            rentalPeriod: parseInt($('#rental-period').val()),
+            totalPrice: parseFloat($('#total-price').text()),
+            orderDate: new Date().toISOString().split('T')[0]
+        }
     };
     console.log('Order data:', order);
 
@@ -363,18 +367,18 @@ function submitOrder() {
                     let car = data.cars.find(c => c.vin === vin);
                     let orderDetails = `
                         <div class="order-info-grid">
-                            <p><strong>Car:</strong> ${car ? `${car.brand} ${car.car_model}` : 'Unknown'}</p>
-                            <p><strong>Customer:</strong> ${order.customer_name}</p>
-                            <p><strong>Start Date:</strong> ${order.start_date}</p>
-                            <p><strong>Rental Period:</strong> ${order.rental_period} day(s)</p>
-                            <p><strong>Total Price:</strong> $${order.total_price}</p>
+                            <p><strong>Car:</strong> ${car ? `${car.brand} ${car.carModel}` : 'Unknown'}</p>
+                            <p><strong>Customer:</strong> ${order.customer.name}</p>
+                            <p><strong>Start Date:</strong> ${order.rental.startDate}</p>
+                            <p><strong>Rental Period:</strong> ${order.rental.rentalPeriod} day(s)</p>
+                            <p><strong>Total Price:</strong> $${order.rental.totalPrice}</p>
                         </div>
                     `;
                     $('#order-details').html(orderDetails);
-                    $('#confirmation-modal').data('order-id', response.id);
+                    $('#confirmation-modal').data('order-id', response.orderId);
                     showModal('#confirmation-modal');
                     $('#confirm-order-button').off('click').on('click', function() {
-                        confirmOrder(response.id);
+                        confirmOrder(response.orderId);
                     });
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     console.error('Error fetching car details for modal:', textStatus, errorThrown);
@@ -394,8 +398,8 @@ function submitOrder() {
     });
 }
 
-function confirmOrder(id) {
-    console.log('Confirming order with ID:', id);
+function confirmOrder(orderId) {
+    console.log('Confirming order with ID:', orderId);
     $('#confirmation-modal').hide();
     $('#order-details').html('<p>Confirming order...</p>');
 
@@ -403,7 +407,7 @@ function confirmOrder(id) {
         url: '/confirm-order',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ id: String(id) }),
+        data: JSON.stringify({ orderId: String(orderId) }),
         success: function(response) {
             console.log('Confirmation response:', response);
             if (response.success) {
