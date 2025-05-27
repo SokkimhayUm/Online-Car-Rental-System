@@ -10,13 +10,9 @@ app.use(cors()); // Enable CORS for AJAX requests
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from public/
 
-// PostgreSQL connection pool
+// PostgreSQL connection pool using DATABASE_URL
 const pool = new Pool({
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false } // Required for Railway
 });
 
