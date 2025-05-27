@@ -337,15 +337,21 @@ function submitOrder() {
     $('#submit-button').prop('disabled', true).text('Submitting...');
     let vin = localStorage.getItem('selectedCarVin');
     let order = {
-        customer_name: $('#name').val().trim(),
-        customer_phone: $('#phone').val().trim(),
-        customer_email: $('#email').val().trim(),
-        customer_license: $('#license').val().trim(),
-        car_vin: vin,
-        start_date: $('#start-date').val(),
-        rental_period: parseInt($('#rental-period').val()),
-        total_price: parseFloat($('#total-price').text()),
-        order_date: new Date().toISOString().split('T')[0]
+        customer: {
+            customer_name: $('#name').val().trim(),
+            customer_phone: $('#phone').val().trim(),
+            customer_email: $('#email').val().trim(),
+            customer_license: $('#license').val().trim()
+        },
+        car: {
+            vin: vin
+        },
+        rental: {
+            start_date: $('#start-date').val(),
+            rental_period: parseInt($('#rental-period').val()),
+            total_price: parseFloat($('#total-price').text()),
+            order_date: new Date().toISOString().split('T')[0]
+        }
     };
     console.log('Order data:', order);
 
