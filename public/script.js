@@ -371,10 +371,10 @@ function submitOrder() {
                         </div>
                     `;
                     $('#order-details').html(orderDetails);
-                    $('#confirmation-modal').data('order-id', response.orderId);
+                    $('#confirmation-modal').data('order-id', response.id);
                     showModal('#confirmation-modal');
                     $('#confirm-order-button').off('click').on('click', function() {
-                        confirmOrder(response.orderId);
+                        confirmOrder(response.id);
                     });
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     console.error('Error fetching car details for modal:', textStatus, errorThrown);
@@ -394,8 +394,8 @@ function submitOrder() {
     });
 }
 
-function confirmOrder(orderId) {
-    console.log('Confirming order with ID:', orderId);
+function confirmOrder(id) {
+    console.log('Confirming order with ID:', id);
     $('#confirmation-modal').hide();
     $('#order-details').html('<p>Confirming order...</p>');
 
@@ -403,7 +403,7 @@ function confirmOrder(orderId) {
         url: '/confirm-order',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ orderId: String(orderId) }),
+        data: JSON.stringify({ id: String(id) }),
         success: function(response) {
             console.log('Confirmation response:', response);
             if (response.success) {
