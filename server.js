@@ -10,9 +10,13 @@ app.use(cors()); // Enable CORS for AJAX requests
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from public/
 
+// Log DATABASE_URL (sanitize password for security)
+const dbUrl = process.env.DATABASE_URL;
+console.log('Attempting to connect to database with URL:', dbUrl ? dbUrl.replace(/:(.+?)@/, ':****@') : 'undefined');
+
 // PostgreSQL connection pool using DATABASE_URL
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
   ssl: { rejectUnauthorized: false } // Required for Railway
 });
 
