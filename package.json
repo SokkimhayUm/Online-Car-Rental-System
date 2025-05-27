@@ -1,7 +1,7 @@
 {
     "name": "car-rental-system",
     "version": "1.0.0",
-    "description": "Car rental system for AUT2025 assignment",
+    "description": "A Car Rental System Application using AJAX and JSON",
     "main": "server.js",
     "scripts": {
         "start": "node server.js"

@@ -582,6 +582,25 @@
       },
       "orderId": 31,
       "status": "confirmed"
+    },
+    {
+      "customer": {
+        "name": "jack",
+        "phoneNumber": "0123456789",
+        "email": "jack@yahoo.com",
+        "driversLicense": "123123"
+      },
+      "car": {
+        "vin": "JTDBT923871234567"
+      },
+      "rental": {
+        "startDate": "2025-05-28",
+        "rentalPeriod": 3,
+        "totalPrice": 135,
+        "orderDate": "2025-05-27"
+      },
+      "orderId": 32,
+      "status": "confirmed"
     }
   ]
 }

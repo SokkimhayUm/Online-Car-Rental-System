@@ -8,7 +8,7 @@
       "yearOfManufacture": 2014,
       "mileage": "30,000 km",
       "fuelType": "Gasoline",
-      "available": false,
+      "available": true,
       "pricePerDay": 50,
       "description": "A reliable and fuel-efficient sedan perfect for daily commuting.",
       "vin": "1HGBH41JXMN109186"
